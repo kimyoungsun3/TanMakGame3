@@ -29,17 +29,19 @@ public class GameManager : FSM<GAME_STATE> {
 	public float GAME_END_WAITTIME = 3f;
 	#endregion
 
-	void Awake(){
-		if (ins == null) {
-			ins = this;
-		} else if (ins_ != this) {
-			//전것존재 -> 또다른것 -> 삭제. 이후는 실행안됨(Start, OnEnable)...
-			//Debug.Log ("또생성? 음... 삭제(지금것)");
-			Destroy (gameObject);
-			return;
-		}
-		DontDestroyOnLoad (gameObject);
 
+	void Awake(){
+		//if (ins == null) {
+		//	ins = this;
+		//} else if (ins_ != this) {
+		//	//전것존재 -> 또다른것 -> 삭제. 이후는 실행안됨(Start, OnEnable)...
+		//	//Debug.Log ("또생성? 음... 삭제(지금것)");
+		//	Destroy (gameObject);
+		//	return;
+		//}
+		//DontDestroyOnLoad (gameObject);
+
+		ins = this;
 		SetEnvironment ();		
 	}
 

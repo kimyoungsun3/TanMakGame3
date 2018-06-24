@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ui_MsgRoot : MonoBehaviour {
 	public static Ui_MsgRoot ins;
-	public Transform prefabDevTest;
+	//public Transform prefabDevTest;
 	Camera gameCamera;
 	Camera uiCamera;
 	Transform trans;
@@ -16,7 +16,7 @@ public class Ui_MsgRoot : MonoBehaviour {
 		uiCamera 	= NGUITools.FindCameraForLayer(gameObject.layer);
 		trans 		= transform;
 
-		prefabDevTest.gameObject.SetActive (false);
+		//prefabDevTest.gameObject.SetActive (false);
 	}
 
 	public void InvokeShowMessage(string _prefabName, string _msg, Vector3 _pos, float _duration){
@@ -27,10 +27,9 @@ public class Ui_MsgRoot : MonoBehaviour {
 		Vector3 _wpos = uiCamera.ViewportToWorldPoint(_vpos);
 		_wpos.z = transform.position.z;
 
+		//UI Message
 		PoolReturnUI _p2 = PoolManager.ins.Instantiate(_prefabName, _wpos, Quaternion.identity).GetComponent<PoolReturnUI>();
-		//Debug.Log (_p2);
-
-		StartCoroutine(_p2.ShowMsg (_msg, _duration));
+		_p2.ShowMsg (_msg, _duration);
 	}
 	
 	// Update is called once per frame
