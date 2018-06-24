@@ -11,19 +11,19 @@ public class PoolReturnUI : PoolMaster {
 	public override void Awake(){
 		base.Awake ();
 		label = GetComponent<UILabel> ();
+
 		tween = GetComponent<TweenAlpha> ();
 		tween.enabled = false;
 	}
 
-	public void ShowMsg(string _msg, float _duration){
-
+	public void ShowMsg(string _msg){
 		//show message
 		label.text 	= _msg;
-		waitTime 	= Time.time + _duration;
+		waitTime 	= Time.time + tween.duration;
 		if (co != null) {
 			StopCoroutine (co);
 		}
-		co = StartCoroutine(CoShowMessage (_msg, _duration));
+		co = StartCoroutine(CoShowMessage (_msg));
 
 		//tween
 		tween.enabled = true;
@@ -31,7 +31,7 @@ public class PoolReturnUI : PoolMaster {
 		tween.PlayForward();
 	}
 
-	IEnumerator CoShowMessage(string _msg, float _duration){
+	IEnumerator CoShowMessage(string _msg){
 		while (Time.time < waitTime) {
 			yield return null;
 		}

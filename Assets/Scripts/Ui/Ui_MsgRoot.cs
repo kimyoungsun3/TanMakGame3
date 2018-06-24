@@ -29,7 +29,7 @@ public class Ui_MsgRoot : MonoBehaviour {
 
 		//UI Message
 		PoolReturnUI _p2 = PoolManager.ins.Instantiate(_prefabName, _wpos, Quaternion.identity).GetComponent<PoolReturnUI>();
-		_p2.ShowMsg (_msg, _duration);
+		_p2.ShowMsg (_msg);
 	}
 	
 	// Update is called once per frame

@@ -10,6 +10,7 @@ public class Enemy : PoolMaster, IDamageable {
 	Vector3 moveDir;
 	float damage = 1;
 	bool bDead = false;
+	//Vector3 hitPoint, hitDir;
 	public override void Awake(){
 		//Debug.Log (this + "Awake");
 		base.Awake ();
@@ -26,7 +27,7 @@ public class Enemy : PoolMaster, IDamageable {
 	//	damage 		= _damage;
 	//}
 
-	void Update(){
+	void FixedUpdate(){
 		trans.Translate (-Constant.up * speed * Time.deltaTime);
 	}
 
@@ -45,32 +46,37 @@ public class Enemy : PoolMaster, IDamageable {
 	}
 
 	public void TakeHit(float _damage, Vector3 _hitPoint, Vector3 _hitDirection){
+		//Debug.Log ("Enemy 데미지");
+		health 		-= _damage;
 
+		if (!bDead && health <= 0f) {
+			Die (_hitPoint);
+		}
 	}
 
 	//총알 		-> Enemy (Ray)
 	//Player 	-> Enemy (no Damage)?
 	public void TakeDamage(float _damage){
 		//Debug.Log ("Enemy 데미지");
-		health -= _damage;
+		//health -= _damage;
 
-		if (!bDead && health <= 0f) {
-			Die ();
-		}
+		//if (!bDead && health <= 0f) {
+		//	Die ();
+		//}
 	}
 
-	void Die(){
+	void Die(Vector3 _hitPoint){
 		bDead = true;
 
 		//Expire Effect
-		PoolMaster _p = PoolManager.ins.Instantiate("EffectEnemyDeath", trans.position, Quaternion.identity).GetComponent<PoolMaster>();
+		PoolMaster _p = PoolManager.ins.Instantiate("EffectEnemyDeath", _hitPoint, Quaternion.identity).GetComponent<PoolMaster>();
 		_p.Play ();
 
 		//Sound
 		SoundManager.ins.Play ("Enemy attack", false);
 
 		//Message Show
-		Ui_MsgRoot.ins.InvokeShowMessage("UiHitMessage", "[ff0000]Bomb[-] [00ff00]Enemy", trans.position, .5f);
+		Ui_MsgRoot.ins.InvokeShowMessage("UiHitMessage", "[00ff00]Hit[-]", _hitPoint, 5f);
 
 		Destroy ();
 	}

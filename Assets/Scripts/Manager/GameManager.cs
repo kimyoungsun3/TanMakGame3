@@ -109,7 +109,9 @@ public class GameManager : FSM<GAME_STATE> {
 		player.Init ();
 
 		//Spawner Setting...
-		EnemySpawner.ins.Init(0, player.transform);		
+		if (EnemySpawner.ins != null) {
+			EnemySpawner.ins.Init (0, player.transform);		
+		}
 	}
 
 	void ModifyGaming(){

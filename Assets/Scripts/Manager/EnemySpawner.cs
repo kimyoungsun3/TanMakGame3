@@ -89,11 +89,12 @@ public class EnemySpawner : MonoBehaviour {
 			//	bRegisterMaterial = true;
 			//}
 
-			waveNextTime = Time.time + 10 * num;//waveCurrent.nextTime;
+			waveNextTime = Time.time + 10;//waveCurrent.nextTime;
 			waveRemainToSpawn--;
 			waveCurrentCount++;
 
-			StartCoroutine ("SpawnEnemy", num);
+			StopAllCoroutines ();
+			StartCoroutine ("SpawnEnemy", num++);
 			//Transform _tileTransform = MapGenerator.ins.GetRandomOpenTile ();
 			//Debug.Log ("A:" + _tileTransform.position);
 			//Enemy _enemy = PoolManager2.ins.Instantiate(waveCurrent.enemy.gameObject, _tileTransform.position + Vector3.up, Quaternion.identity).GetComponent<Enemy> ();
@@ -123,14 +124,15 @@ public class EnemySpawner : MonoBehaviour {
 	#endif
 	*/
 
-
+	string[] ttt = { "Boss", "Enemy1", "Enemy2", "Enemy3" };
 	IEnumerator SpawnEnemy(int _num){
+		//Debug.Log (_num);
 		//Transform _point;
 		Quaternion _q = Quaternion.identity;
 		WaitForSeconds w1 = new WaitForSeconds (2f);
 		while (_num > 0) {
 			for (int i = 0; i < points.Count; i++) {
-				PoolManager.ins.Instantiate ("Boss", points[i].position, _q);
+				PoolManager.ins.Instantiate (ttt[_num % ttt.Length], points[i].position, _q);
 			}
 			yield return w1;
 		}

@@ -88,8 +88,8 @@ public class PlayerBullet : PoolMaster {
 		//Debug.Log (this + "OnHitObject" + hit.collider.gameObject.name);
 		IDamageable _scp = _col.GetComponent<IDamageable>();
 		if (_scp != null) {
-			//_scp.TakeHit (damage, _hitPoint, trans.forward);
-			_scp.TakeDamage(damage);
+			_scp.TakeHit (damage, _hitPoint, trans.forward);
+			//_scp.TakeDamage(damage);
 		}
 
 		//EnemyHealth _scp = hit.collider.GetComponent<EnemyHealth> ();
@@ -100,7 +100,6 @@ public class PlayerBullet : PoolMaster {
 		//Sound, Particle
 		PoolMaster _p = PoolManager.ins.Instantiate("EffectEnemyHit", hit.point, Quaternion.identity).GetComponent<PoolMaster>();
 		_p.Play ();
-
 		//Animation Auto > 파티클이 약간 빠름...
 		//PoolReturnAnimation _a = PoolManager.ins.Instantiate ("HitEffectAnim", hit.point, Quaternion.identity).GetComponent<PoolReturnAnimation>();
 		//_a.Play ("HitEffect");

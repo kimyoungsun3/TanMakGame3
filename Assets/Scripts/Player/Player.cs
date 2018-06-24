@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 //[RequireComponent(typeof(PlayerController))]
 public class Player : MonoBehaviour, IDamageable {
@@ -50,10 +53,11 @@ public class Player : MonoBehaviour, IDamageable {
 	}
 
 	//Gaming
-	void Update(){
+	//void Update(){
+	void FixedUpdate(){
 		//GameManager.ins.gamestate == GAME_STATE.Gaming
 
-		if (Input.GetMouseButton (0)) {
+		//if (Input.GetMouseButton (0)) {
 			ray = cam.ScreenPointToRay (Input.mousePosition);
 			if (plane.Raycast (ray, out distance)) {
 				hitPoint = ray.GetPoint (distance);
@@ -61,8 +65,32 @@ public class Player : MonoBehaviour, IDamageable {
 				hitPoint += offset;
 				trans.position = hitPoint;
 
-				Shooting ();
+				if (Time.time > time) {
+					time = Time.time + weaponDeleyTime;
+					Shooting ();
+				}
 			}
+		//}
+
+		//#if UNITY_EDITOR
+		if (Input.GetKeyDown (KeyCode.Space) || Input.GetMouseButtonDown (1)) {			
+			weaponStep++;
+			if (weaponStep > 6) {
+				weaponStep = 1;
+			}
+			Debug.Log ("Editor 모드 > 무기변경 (Space)");
+			#if UNITY_EDITOR
+		} else if (Input.GetKeyDown (KeyCode.Alpha1)) {
+			Time.timeScale *= 0.5f;
+			Debug.Log ("Editor 모드 > 1SpeedDown " + Time.timeScale);
+		} else if (Input.GetKeyDown (KeyCode.Alpha2)) {
+			Time.timeScale = 1f;
+			Debug.Log ("Editor 모드 > 2SpeedDown " + Time.timeScale);
+
+		} else if (Input.GetKeyDown (KeyCode.Alpha3)) {
+			EditorApplication.isPaused = !EditorApplication.isPaused;
+			Debug.Log ("Editor 모드 > 3SpeedDown " + Time.timeScale);
+			#endif
 		}
 
 
@@ -84,32 +112,48 @@ public class Player : MonoBehaviour, IDamageable {
 	}
 
 	void Shooting(){
-
 		//Debug.Log(time + ":" + Time.time + ":" + (time > Time.time));
-		if (Time.time > time) {
-			time = Time.time + weaponDeleyTime;
-			//SoundManager.ins.Play ("Gun shoot", false);
-			switch (weaponStep) {
-			case 1:
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
-				break;
-			case 2:
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
-				break;
-			case 3:
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
-				break;
-			case 5:
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position+ Vector3.left, spawn [1].transform.rotation);
-				PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position+ Vector3.right, spawn [2].transform.rotation);
-				break;
-			}
+		//SoundManager.ins.Play ("Gun shoot", false);
+		switch (weaponStep) {
+		case 1:
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
+			break;
+		case 2:
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
+			break;
+		case 3:
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
+			break;
+		case 4:
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [3].transform.position, spawn [3].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [4].transform.position, spawn [4].transform.rotation);
+			break;
+		case 5:
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [3].transform.position, spawn [3].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [4].transform.position, spawn [4].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [5].transform.position, spawn [5].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [6].transform.position, spawn [6].transform.rotation);
+			break;
+		case 6:
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [0].transform.position, spawn [0].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [1].transform.position, spawn [1].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [2].transform.position, spawn [2].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [3].transform.position, spawn [3].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [4].transform.position, spawn [4].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [5].transform.position, spawn [5].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [6].transform.position, spawn [6].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [7].transform.position, spawn [7].transform.rotation);
+			PoolManager.ins.Instantiate ("PlayerBullet", spawn [8].transform.position, spawn [8].transform.rotation);
+			break;
 		}
 	}
 
