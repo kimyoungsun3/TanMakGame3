@@ -54,7 +54,7 @@ public class Player : MonoBehaviour, IDamageable {
 
 	//Gaming
 	//void Update(){
-	void FixedUpdate(){
+	void Update(){
 		//GameManager.ins.gamestate == GAME_STATE.Gaming
 
 		//if (Input.GetMouseButton (0)) {

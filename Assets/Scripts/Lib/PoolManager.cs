@@ -69,6 +69,7 @@ public class PoolManager : MonoBehaviour {
 			_bUI	= objList [j].bUI;
 			if (_parent == null) {
 				_parent = transform;
+				objList [j].parent = transform;
 			}
 
 			if (_count <= 0) {

@@ -27,7 +27,7 @@ public class Enemy : PoolMaster, IDamageable {
 	//	damage 		= _damage;
 	//}
 
-	void FixedUpdate(){
+	void Update(){
 		trans.Translate (-Constant.up * speed * Time.deltaTime);
 	}
 

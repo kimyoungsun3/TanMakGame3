@@ -11,7 +11,7 @@ public class SoundManager : MonoBehaviour {
 		public AudioClip[] clips;
 		public AudioSource[] sources;
 		public bool pitchRandom = true;
-		public int index, indexBefore;
+		[HideInInspector] public int index, indexBefore;
 		[HideInInspector] public int hashID;
 
 		public void Init(){
@@ -151,7 +151,7 @@ public class SoundManager : MonoBehaviour {
 				} else if (debugMusicIndex >= _s.clips.Length) {
 					debugMusicIndex = _s.clips.Length - 1;
 				}
-				SoundManager.ins.Play (_s.name, false, debugMusicIndex);
+				if(SoundManager.ins != null)SoundManager.ins.Play (_s.name, false, debugMusicIndex);
 				debugName = _s.name + " "+debugMusicIndex+"번 사운드";
 			} else {
 				debugName = "rang out";
