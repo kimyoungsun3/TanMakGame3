@@ -12,8 +12,10 @@ public class PlayerBullet : PoolMaster {
 	RaycastHit hit;
 	TrailRenderer trailRenderer;
 	float moveDistance, nextTime, damage = 1f;
-	Vector3 oldPosition, nextPoint;
+	Vector3 oldPosition, curPoint, nextPoint;
 	float skinWidth = .01f;
+	float skinLast = 0.1f;
+	bool bFirstRespawn = false;
 	public override void Awake(){
 		//Debug.Log (this + "Awake");
 		base.Awake ();
@@ -25,7 +27,7 @@ public class PlayerBullet : PoolMaster {
 		//Debug.Log (this + "OnEnable");
 		trailRenderer.Clear ();
 		nextTime 	= Time.time + Constant.BULLET_ALIVE_TIME;
-		damage 		= 1f;
+		//damage 	= 1f;
 
 		//소멸된 자리에서 다시 생성된다. ㅠㅠ > 충돌 > 파괴... 
 		// reuse, current position > this area is boss and exist > reuse and collision => result is Expire.
@@ -41,21 +43,17 @@ public class PlayerBullet : PoolMaster {
 	}
 
 	public void SetInit(float _damage){
+		//Debug.Log(this + " SetInit");
 		damage 		= _damage;
-
-		moveDistance = speed * Time.deltaTime;
-		Collider[] _cols = Physics.OverlapSphere (trans.position, moveDistance, mask);
-		if (_cols.Length > 0) {
-			OnHitObject (_cols [0], trans.position);
-		}
+		bFirstRespawn = true;
+		//moveDistance = speed * Time.deltaTime;
+		//Collider[] _cols = Physics.OverlapSphere (trans.position, moveDistance, mask);
+		//if (_cols.Length > 0) {
+		//	OnHitObject (_cols [0], trans.position);
+		//}
 	}
 
 	void Update(){
-		//Debug.Log (this + "Update");
-		//moveDistance = speed * Time.deltaTime;
-		//ray.origin = trans.position;
-		//ray.direction = trans.up;
-
 		////현시점에서 매순간 지속적인 검사를 실행한다...
 		////애도 통과 된 후에는 검사 안함....
 		//if (Physics.Raycast (ray, out hit, moveDistance + skinWidth, mask, QueryTriggerInteraction.Collide)) {
@@ -64,12 +62,34 @@ public class PlayerBullet : PoolMaster {
 		//}	
 
 		moveDistance 	= speed * Time.deltaTime;
-		nextPoint 		= trans.position + trans.up * (moveDistance + skinWidth);
-		if(Physics.Linecast(trans.position, nextPoint, out hit, mask, QueryTriggerInteraction.Collide)){
+		curPoint 		= trans.position - Constant.up * moveDistance;
+		nextPoint 		= trans.position + Constant.up * (moveDistance + skinWidth);
+
+		#if UNITY_EDITOR 
+		//Debug.Log(trans.up);
+		Debug.DrawLine(curPoint, 		trans.position, Color.yellow);
+		Debug.DrawLine(trans.position, 	nextPoint, 		Color.green);
+		#endif
+
+		//처음 생성....
+		if (bFirstRespawn) {
+			bFirstRespawn = !bFirstRespawn;
+			Collider[] _cols = Physics.OverlapSphere (trans.position, moveDistance, mask);
+			if (_cols.Length > 0) {
+				OnHitObject (_cols [0], trans.position);
+				//Debug.Log (this + " > bullet create and collision");
+				return;
+			}
+		}
+
+		//이동중에...
+		if(Physics.Linecast(curPoint, nextPoint, out hit, mask, QueryTriggerInteraction.Collide)){
 			OnHitObject (hit.collider, hit.point);
+			//Debug.Log (this + " > bullet move hit");
 			return;
-		}		
-		trans.Translate (Constant.up * moveDistance);
+		}
+
+		trans.Translate (trans.up * moveDistance);
 
 		if(Time.time > nextTime){
 			Destroy ();
