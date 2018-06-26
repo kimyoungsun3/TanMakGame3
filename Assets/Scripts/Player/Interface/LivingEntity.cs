@@ -2,39 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LivingEntity : MonoBehaviour, IDamageable {
-	protected Transform trans;
-	public float STARTING_HEALTH;
-	protected float health;
-	[HideInInspector]
-	public bool bDead;
-	//public event System.Action callbackDeath;
+public class LivingEntity : PoolMaster, IDamageable {
+	//public float STARTING_HEALTH = 3;
+	[SerializeField] protected float health;
+	protected bool bDead;
 	public System.Action<LivingEntity> callbackDeath;
+	protected Vector3 hitPoint, hitDir;
 
-	protected virtual void Start () {
-		//Debug.Log(this + " S Start:" + transform.position);
-		trans = transform;	
-	}
+	public virtual void TakeHit(float _damage, Vector3 _hitPoint, Vector3 _hitDir){
+		health 		-= _damage;
+		hitPoint 	= _hitPoint;
+		hitDir 		= _hitDir;
 
-	public virtual void TakeHit(float _damage, Vector3 _hitPoint, Vector3 _hitDirection){
-		//Debug.Log(this + " S TakeHit:" + transform.position);
-		//Hit Particle..
-
-		//Damage...
-		TakeDamage(_damage);
-	}
-
-	public virtual void TakeDamage(float _damage){
-		//Debug.Log(this + " S TakeDamage:" + transform.position);
-		health -= _damage;
-
-		if (health <= 0 && !bDead) {
+		if (health <= 0f && !bDead) {
 			Die ();
 		}
 	}
 
-	protected void Die(){
-		//Debug.Log(this + " S Die:" + transform.position);
+	public virtual void TakeDamage(float _damage){
+		//health -= _damage;
+		//
+		//if (health <= 0f && !bDead) {
+		//	Die ();
+		//}
+	}
+
+	protected virtual void Die(){
 		bDead = true;
 		if (callbackDeath != null) {
 			callbackDeath (this);
@@ -44,7 +37,6 @@ public class LivingEntity : MonoBehaviour, IDamageable {
 	}
 
 	public virtual void Destroy(){
-		//Debug.Log(this + " S Destroy:" + transform.position);
 		callbackDeath = null;
 		gameObject.SetActive (false);
 	}

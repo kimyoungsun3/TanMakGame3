@@ -22,18 +22,19 @@ public class PoolReturnParticleSystem : PoolMaster {
 		if (duration <= 0) {
 			duration = particle.main.startLifetimeMultiplier;
 		}
+		//Debug.Log (duration);
 	}
 
-	//void OnEnable(){
-	//	CancelInvoke ();
-	//	Invoke ("Destroy", duration);
-	//}
+	void OnEnable(){
+		CancelInvoke ();
+		Invoke ("Destroy", duration);
+	}
 
 	void OnDisalbe(){
 		CancelInvoke ();
 	}
 
-	public override void Play(){
+	public void Play(){
 		CancelInvoke ();
 		Invoke ("Destroy", duration);
 

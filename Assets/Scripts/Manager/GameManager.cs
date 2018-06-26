@@ -89,13 +89,10 @@ public class GameManager : FSM<GAME_STATE> {
 	//--- Ready ---
 	//-----------------------------------------------------------
 	public void pInReady(){
-		if (uiSceneInfo != null) {
-			uiSceneInfo.SetActive2 (true);
-			uiSceneInfo.SetMessage ("Modify\nReady");
-		}
+		uiSceneInfo.SetActive2 (true);
+		uiSceneInfo.SetMessage ("Modify\nReady");
 
-		if(SoundManager.ins != null)
-			SoundManager.ins.Play ("Menu theme", true);
+		SoundManager.ins.Play ("Menu theme", true);
 	}
 
 	void ModifyReady(){
@@ -113,12 +110,10 @@ public class GameManager : FSM<GAME_STATE> {
 	}
 
 	public void pInGaming(){
-		if (uiSceneInfo != null) {
-			uiSceneInfo.SetActive2 (false);
-		}
+		uiSceneInfo.SetActive2 (false);
 
 		//Sound plays Main Theme.
-		if(SoundManager.ins != null)SoundManager.ins.Play ("Main theme", true);
+		SoundManager.ins.Play ("Main theme", true);
 
 		//user info initiaize
 		if (player == null) {
@@ -127,9 +122,7 @@ public class GameManager : FSM<GAME_STATE> {
 		player.Init ();
 
 		//Spawner Setting...
-		if (EnemySpawner.ins != null) {
-			EnemySpawner.ins.Init (0, player.transform);		
-		}
+		EnemySpawner.ins.EnableControl (0, player.transform);
 	}
 
 	void ModifyGaming(){
@@ -167,8 +160,6 @@ public class GameManager : FSM<GAME_STATE> {
 	//-----------------------------------------------------------
 	void pInResult(){
 		//Spawn Wave -> pInGame...
-		if (uiResult != null) {
-			uiResult.SetActive2 (true);
-		}
+		uiResult.SetActive2 (true);
 	}
 }

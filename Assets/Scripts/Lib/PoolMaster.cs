@@ -11,10 +11,6 @@ public abstract class PoolMaster : MonoBehaviour {
 		go 		= gameObject;
 	}
 
-	public virtual void Init(){
-		
-	}
-
 	public virtual void Play(){
 
 	}

@@ -34,8 +34,8 @@ public static class Util {
 	public static void SetInterpolation( float _startTime){
 		intervalStartTime = _startTime;
 	}
+
 	public static float GetInterpolation(){
 		return Mathf.Clamp01 ((Time.time - intervalStartTime) / intervalTime);
 	}
-
 }
