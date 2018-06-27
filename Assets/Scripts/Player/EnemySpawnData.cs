@@ -52,6 +52,7 @@ public class EnemySpawnData : MonoBehaviour {
 
 
 	void Awake(){
+		//Debug.Log (this + " Awake");
 		ins = this;
 		trans = transform;
 		int i, iMax;
@@ -68,6 +69,10 @@ public class EnemySpawnData : MonoBehaviour {
 			dicEnemyKind.Add (listEnemyKind [i].enemyKind, listEnemyKind [i].enemyPrefab.name);
 		}
 	}
+
+	//void Start(){
+	//	Debug.Log (this + " Start");
+	//}
 
 	public void Parse(ref List<Wave> _list){
 		Wave _w;

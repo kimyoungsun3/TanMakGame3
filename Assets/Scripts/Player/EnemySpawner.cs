@@ -21,7 +21,7 @@ public class EnemySpawner : MonoBehaviour {
 	}
 
 	void Start(){
-		//Debug.Log (this + " Start");
+		//.Log (this + " Start");
 		enabled = false;
 
 		//Wave 정보 파싱.
