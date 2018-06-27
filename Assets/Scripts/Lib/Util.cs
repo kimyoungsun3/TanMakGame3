@@ -38,4 +38,13 @@ public static class Util {
 	public static float GetInterpolation(){
 		return Mathf.Clamp01 ((Time.time - intervalStartTime) / intervalTime);
 	}
+
+	public static float[] ParseFloatArray(string _src, char _c){
+		string[] _sa 	= _src.Split (_c);
+		float[] _fa 	= new float[_sa.Length];
+		for (int i = 0, iMax = _sa.Length; i < iMax; i++) {
+			_fa [i] = float.Parse(_sa [i]);
+		}
+		return  _fa;
+	}
 }

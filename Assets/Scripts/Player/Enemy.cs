@@ -8,6 +8,7 @@ public class Enemy : LivingEntity {
 	[SerializeField] protected float speed 	= 2f;
 	Vector3 moveDir;
 	float damage = 1f;
+	int ai;
 
 	public override void Awake(){
 		base.Awake ();
@@ -16,10 +17,11 @@ public class Enemy : LivingEntity {
 	//-----------------------------------------
 	//Enemy Spawn
 	//-----------------------------------------
-	public void RestartEnemy(float _health, float _damage, float _speed){
+	public void RestartEnemy(float _health, float _damage, float _speed, int _ai){
 		health 	= _health;
 		damage 	= _damage;
 		speed 	= _speed;
+		ai 		= _ai;
 
 		bDead 	= false;
 	}

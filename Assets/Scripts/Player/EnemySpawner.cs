@@ -5,10 +5,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour {
 	[SerializeField] int waveIndex;
 	public static EnemySpawner ins;
-	public List<Transform> spawnPoints = new List<Transform> ();
-	public List<EnemyInfo> enemyInfos = new List<EnemyInfo> ();
-	Dictionary<int, GameObject> enemyDic = new Dictionary<int, GameObject>();
-	public List<Wave> waves = new List<Wave>();
+	[SerializeField] List<Wave> waves = new List<Wave>();
 
 	Transform player;
 	Wave waveCurrent;
@@ -27,24 +24,10 @@ public class EnemySpawner : MonoBehaviour {
 		//Debug.Log (this + " Start");
 		enabled = false;
 
-		ParsingData ();
-	}
-
-	void ParsingData(){
-		//Debug.Log (this + " ParsingData");
-	
-		//1 - Enemey1 Prefab Parseing
-		int i, iMax, j;
-		for (i = 0, iMax = enemyInfos.Count; i < iMax; i++) {
-			//Debug.Log ("Dic[" + i +"]" + enemyInfos [i].enemyKind + ":" + enemyInfos [i].enemyGameObject.name);
-			enemyDic.Add (enemyInfos [i].enemyKind, enemyInfos [i].enemyGameObject);
-		}
-		//Debug.Log (enemyDic [100]);
-
-		//Wave 정보 파싱   string -> Vector5, 적군 Prefab있는가 검사..
-		for (i = 0, iMax = waves.Count; i < iMax; i++) {
-			waves [i].Parse (i, enemyDic);
-		}
+		//Wave 정보 파싱.
+		waves.Clear();
+		EnemySpawnData.ins.Parse(ref waves);
+		//Debug.Log(waves.Count);
 	}
 
 	//------------------------------------
@@ -81,6 +64,7 @@ public class EnemySpawner : MonoBehaviour {
 		
 		if ( Time.time > waveNextTime && !bEnd){
 			//Debug.Log (" > StartCoroutine " + waveIndex);
+			int _index = waveIndex;
 			waveCurrent 	= waves [waveIndex];
 			waveNextTime 	= Time.time + waveCurrent.spawnDelayTime;
 			waveIndex++;
@@ -90,43 +74,40 @@ public class EnemySpawner : MonoBehaviour {
 				bEnd = true;
 				waveIndex = waves.Count - 1;
 			}
-			StartCoroutine (SpawnEnemy(waveCurrent, bEnd));
+			StartCoroutine (SpawnEnemy(_index, waveCurrent, bEnd));
 		}
 	}
 
 	//------------------------------------
 	//EnemySpawner
 	//------------------------------------
-	IEnumerator SpawnEnemy(Wave _wave, bool _bEnd){
+	IEnumerator SpawnEnemy(int _index, Wave _wave, bool _bEnd){
 		//Debug.Log (this + " SpawnEnemy");
 		Quaternion _q 		= Quaternion.identity;
 		int _intervalCount 	= _wave.intervalCount;
-		WaitForSeconds _w 	= new WaitForSeconds (waveCurrent.intervalDelayTime);
-		int _kind, i;
-		Enemy _enemy;
-		int _count = 5;
+		WaitForSeconds _wait= new WaitForSeconds (waveCurrent.intervalDelayTime);
+		int i, _count;
+		SpawnRowData _enemyData;
+		Enemy _enemyScp;
 
 		while (_intervalCount > 0 || _bEnd) {	
-			//#if UNITY_EDITOR		
-			//Debug.Log(_wave.debugIndex + ":" + _intervalCount);
-			//_wave.DisplayParseInfo ();
-			//#endif
-
+			_count = _wave.listSpawnRowData.Count;
 			for (i = 0; i < _count; i++) {
-				_kind = _wave.enemyKindVal[i];
-				_enemy = PoolManager.ins.Instantiate (enemyDic[_kind], spawnPoints[i].position, _q).GetComponent<Enemy>();
-				_enemy.RestartEnemy ( _wave.enemyHealthVal[i], _wave.enemyDamageVal[i], _wave.enemySpeedVal[i]);
+				_enemyData = _wave.listSpawnRowData [i];
 
-				//_enemy.callbackDeath = OnEnemyDeath;
+				_enemyScp = PoolManager.ins.Instantiate (_enemyData.enemyName, _enemyData.spawnPoint.position, _q).GetComponent<Enemy>();
+				_enemyScp.RestartEnemy ( _enemyData.enemyHealth, _enemyData.enemyDamage, _enemyData.enemySpeed, _enemyData.enemyAiType);
+
 				//Enemy list를 관리하기 위해서 등록해둔다...
+				//_enemyScp.callbackDeath = OnEnemyDeath;
 				//listAliveEnemy.Add (_enemy);
 			}
 			_intervalCount--;
-			yield return _w;
+			yield return _wait;
 		}
 
 		//#if UNITY_EDITOR		
-		//Debug.Log (_wave.debugIndex + " > 끝");
+		//Debug.Log (_index + " > 끝");
 		//#endif
 	}
 
@@ -141,8 +122,6 @@ public class EnemySpawner : MonoBehaviour {
 		//	NextWave ();
 		//}
 	}
-
-
 
 	public void NextSkip(){
 		StopAllCoroutines ();
