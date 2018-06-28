@@ -62,8 +62,8 @@ public class PlayerBullet : PoolMaster {
 		//}	
 
 		moveDistance 	= speed * Time.deltaTime;
-		curPoint 		= trans.position - Constant.up * moveDistance;
-		nextPoint 		= trans.position + Constant.up * (moveDistance + skinWidth);
+		curPoint 		= trans.position - trans.up * moveDistance;
+		nextPoint 		= trans.position + trans.up * (moveDistance + skinWidth);
 
 		#if UNITY_EDITOR 
 		//Debug.Log(trans.up);

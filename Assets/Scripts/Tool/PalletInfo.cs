@@ -5,40 +5,41 @@ using UnityEngine;
 public enum PalletMode { None, Delete, Modify, Select};
 public class PalletInfo : MonoBehaviour {
 	public PalletMode mode;
-	public int enemyKind;
-	public GameObject goFly;
+	public int enemyNum;
+	public GameObject enemyGO;
 
 	UISprite uiSprite;
 	UILabel uiLabel;
 
-	public void SetInit (PalletMode _mode, int _enemyKind){
+	public void SetInit (PalletMode _mode, int _enemyNum){
 		mode 		= _mode;
-		enemyKind 	= _enemyKind;
+		enemyNum 	= _enemyNum;
 		uiSprite 	= GetComponent<UISprite> ();
 		uiLabel 	= GetComponentInChildren<UILabel> ();
 		if (_mode == PalletMode.Delete || _mode == PalletMode.Modify) {
-			ActiveDefault (_mode);
-		}
-
-		SetUISprite (0.4f);
-	}
-	//@@@@@@@@
-	public void SetAddMemoryGoFly(GameObject _goFly){
-		goFly 		= _goFly;
-	}
-
-	void ActiveDefault(PalletMode _mode){
-		if (uiLabel != null) {
 			uiLabel.text = _mode.ToString ();;
+		} else {
+			uiLabel.text = "";
 		}
+		gameObject.name = _mode.ToString ();
+
+		SetBoardAlpha (0.4f);
+	}
+
+	public void SetPalleteFly(GameObject _go){
+		enemyGO 		= _go;
+		gameObject.name = _go.name;
+		uiLabel.text 	= _go.name;
 	}
 
 	void OnPress(bool _bPress){
 		//Debug.Log (this +":"+ _bPress);
-		SpawnTool.ins.InvokeSelectedPallete (this);
+		if (_bPress) {
+			SpawnTool.ins.InvokeSelectedPallete (this);
+		}
 	}
 
-	public void SetUISprite(float _alpha){
+	public void SetBoardAlpha(float _alpha){
 		if (uiSprite != null) {
 			uiSprite.alpha = _alpha;
 		}

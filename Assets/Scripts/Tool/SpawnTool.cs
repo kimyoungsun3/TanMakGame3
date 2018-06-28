@@ -36,11 +36,11 @@ public class SpawnTool : MonoBehaviour {
 
 		//Delete Pallete
 		InstancePalleteParent (PalletMode.Delete, -1, _parent, goSamplePallete, _pos);
-		InstancePalleteParent (PalletMode.Modify, -1, _parent, goSamplePallete, _pos);
+		//InstancePalleteParent (PalletMode.Modify, -1, _parent, goSamplePallete, _pos);
 
 		//EnemyList
 		for(int i = 0, iMax = enemySpawnData.listEnemyKind.Count; i < iMax; i++){
-			_go = InstancePalleteParent (PalletMode.Select, enemySpawnData.listEnemyKind [i].enemyKind, _parent, goSamplePallete, _pos);
+			_go = InstancePalleteParent (PalletMode.Select, enemySpawnData.listEnemyKind [i].enemyNum, _parent, goSamplePallete, _pos);
 			InstancePalleteFly (_go, enemySpawnData.listEnemyKind [i].enemyPrefab, _pos);
 		}
 
@@ -54,10 +54,7 @@ public class SpawnTool : MonoBehaviour {
 		_go.transform.position = _pos;
 
 		//Simple한 Info Class 추가...
-		PalletInfo _palleteInfo = _go.GetComponent<PalletInfo>();
-		if(_palleteInfo == null){
-			_palleteInfo = _go.AddComponent<PalletInfo> ();
-		}
+		PalletInfo _palleteInfo = _go.AddComponent<PalletInfo> ();
 		_palleteInfo.SetInit (_mode, _enemyKind);
 
 		//리스트에 추가.
@@ -66,22 +63,20 @@ public class SpawnTool : MonoBehaviour {
 		return _go;
 	}
 
-	void InstancePalleteFly(GameObject _parent, GameObject _prefab, Vector3 _pos){
-		GameObject _go = NGUITools.AddChild (_parent, _prefab);
-		_go.transform.position = _pos;
-		_go.transform.localScale = Vector3.one * 100f;
+	void InstancePalleteFly(GameObject _parent, GameObject _enemyPrefab, Vector3 _pos){
+		GameObject _enmeyGO = NGUITools.AddChild (_parent, _enemyPrefab);
+		_enmeyGO.transform.position = _pos;
+		_enmeyGO.transform.localScale = Vector3.one * 100f;
 
-
-		//@@@@@@@@
 		//Life된 것호출...
-		_parent.GetComponent<PalletInfo>().SetAddMemoryGoFly(_go);
+		_parent.GetComponent<PalletInfo>().SetPalleteFly(_enmeyGO);
 
-		Enemy _enemy = _go.GetComponent<Enemy> ();
+		Enemy _enemy = _enmeyGO.GetComponent<Enemy> ();
 		if (_enemy != null) {
 			_enemy.enabled = false;
 		}
 
-		Collider _col = _go.GetComponent<Collider> ();
+		Collider _col = _enmeyGO.GetComponent<Collider> ();
 		if (_col != null) {
 			_col.enabled = false;
 		}
@@ -95,9 +90,9 @@ public class SpawnTool : MonoBehaviour {
 	public void InvokeSelectedPallete(PalletInfo _pallet){
 		cursorPallet = _pallet;
 		for (int i = 0, iMax = listPallet.Count; i < iMax; i++) {
-			listPallet [i].SetUISprite (0.4f);
+			listPallet [i].SetBoardAlpha (0.4f);
 		}
-		cursorPallet.SetUISprite (1f);
+		cursorPallet.SetBoardAlpha (1f);
 	}
 
 	public void InvokeSelectedTile(TileInfo _tile){
@@ -106,13 +101,14 @@ public class SpawnTool : MonoBehaviour {
 			return;
 		}
 		beforeTile = cursorTile;
-		cursorTile = _tile;			
+		cursorTile = _tile;
 
 		switch(cursorPallet.mode){
 		case PalletMode.Select:
-			cursorTile.SetInput (cursorPallet);
+			cursorTile.SetSelect (cursorPallet);
 			break;
 		case PalletMode.Delete:
+			cursorTile.SetDelete (cursorPallet);
 			break;
 		case PalletMode.Modify:
 			break;
@@ -125,7 +121,7 @@ public class SpawnTool : MonoBehaviour {
 	void CreateTile(){
 		//버튼들 생성....
 		GameObject _go;
-		string _name;
+		string _strSpawnPoint;
 		float disx = 140f;
 		float disy = 140f;
 		int xMax = 5, yMax = 5;
@@ -135,15 +131,12 @@ public class SpawnTool : MonoBehaviour {
 			for (int y = 0; y < yMax; y++) {
 				//create point
 				_go = NGUITools.AddChild (gameObject, goSampleTile);
-				_go.name = _name = "" + x + y;
+				_go.name = _strSpawnPoint = "" + x + y;
 				_go.transform.localPosition = _pos + new Vector3 (x * disx, y * disy, 0);
 
 				//Simple한 Info Class 추가...
-				TileInfo _tileInfo = _go.GetComponent<TileInfo>();
-				if (_tileInfo == null) {
-					_tileInfo = _go.AddComponent<TileInfo> ();
-				}
-				_tileInfo.SetInit(_name);
+				TileInfo _tileInfo = _go.GetComponent<TileInfo> ();
+				_tileInfo.SetInit(_strSpawnPoint);
 
 				//~~~~이걸로 조절.....
 				listTile.Add (_tileInfo);

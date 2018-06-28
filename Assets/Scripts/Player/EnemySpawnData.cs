@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemySpawnData : MonoBehaviour {
 	public static EnemySpawnData ins;
 	public List<EnemyInfo> listEnemyKind = new List<EnemyInfo> ();
-	Dictionary<int, string> dicEnemyKind = new Dictionary<int, string>();
+	Dictionary<int, string> dicEnemyName = new Dictionary<int, string>();
 	Dictionary<int, Transform> dicSpawnPoint = new Dictionary<int, Transform>();
 	Transform trans;
 
@@ -66,7 +66,7 @@ public class EnemySpawnData : MonoBehaviour {
 
 		//EnemyKind -> Dic<int, GameObject>
 		for (i = 0, iMax = listEnemyKind.Count; i < iMax; i++) {
-			dicEnemyKind.Add (listEnemyKind [i].enemyKind, listEnemyKind [i].enemyPrefab.name);
+			dicEnemyName.Add (listEnemyKind [i].enemyNum, listEnemyKind [i].enemyPrefab.name);
 		}
 	}
 
@@ -86,8 +86,8 @@ public class EnemySpawnData : MonoBehaviour {
 		return dicSpawnPoint [_point];
 	}
 
-	public string GetEnemyName(int _kind){
-		return dicEnemyKind [_kind];
+	public string GetEnemyName(int _num){
+		return dicEnemyName [_num];
 	}
 }
 
@@ -141,34 +141,31 @@ public class Wave{
 
 [System.Serializable]
 public struct EnemyInfo{
-	public int enemyKind;
+	public int enemyNum;
 	public GameObject enemyPrefab;
 }
 
 [System.Serializable]
 public class SpawnRowData{
-	public Transform spawnPoint;
-	public string enemyName;
+	public Transform spawnPoint;		//00 01 02  <- Transform
+	public string enemyName;			//Enemy1, Enemy2
 	public float enemyHealth, enemySpeed, enemyDamage;
-	public int enemyAiType;
+	public int enemyAiType;				//AiType int 
 
 	public SpawnRowData(){
 	}
 
 	public SpawnRowData(Transform _p, string _k, float _h, float _s, float _d, int _a){
 		spawnPoint 	= _p;
-		enemyName 	= _k;
+		enemyName	= _k;
 		enemyHealth = _h;
 		enemySpeed 	= _s;
 		enemyDamage = _d;
 		enemyAiType = _a;
 	}
-}
 
-[System.Serializable]
-public class SpawnRowData2{
-	public string spawnPoint;
-	public int enemyKind;//enemyName;
-	public float enemyHealth, enemySpeed, enemyDamage;
-	public int enemyAiType;
+	//Tool에 사용되는것....
+	public bool bSelect;
+	public string spawnPointStr;
+	public int enemyNum;
 }
