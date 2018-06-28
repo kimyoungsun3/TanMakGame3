@@ -56,12 +56,12 @@ public class EnemySpawnData : MonoBehaviour {
 		ins = this;
 		trans = transform;
 		int i, iMax;
+		Transform _t;
 
 		//SpawnPoint -> Dic<int, Transform>
-		Transform _t;
 		for (i = 0, iMax = transform.childCount; i < iMax; i++) {
 			_t = trans.GetChild (i);
-			dicSpawnPoint.Add (int.Parse(_t.name), _t);
+			dicSpawnPoint.Add (int.Parse (_t.name), _t);
 		}
 
 		//EnemyKind -> Dic<int, GameObject>
@@ -152,6 +152,9 @@ public class SpawnRowData{
 	public float enemyHealth, enemySpeed, enemyDamage;
 	public int enemyAiType;
 
+	public SpawnRowData(){
+	}
+
 	public SpawnRowData(Transform _p, string _k, float _h, float _s, float _d, int _a){
 		spawnPoint 	= _p;
 		enemyName 	= _k;
@@ -160,4 +163,12 @@ public class SpawnRowData{
 		enemyDamage = _d;
 		enemyAiType = _a;
 	}
+}
+
+[System.Serializable]
+public class SpawnRowData2{
+	public string spawnPoint;
+	public int enemyKind;//enemyName;
+	public float enemyHealth, enemySpeed, enemyDamage;
+	public int enemyAiType;
 }

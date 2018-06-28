@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnTool : MonoBehaviour {
-	public static SpawnTool ins;
+public class SpawnTool1 : MonoBehaviour {
+	public static SpawnTool1 ins;
 	public GameObject goSamplePallete;
 	public Transform transStartPointPallete;
 
 	public GameObject goSampleTile;
 	public Transform transStartPointTile;
 	UIGrid gridPallete;
+	public Transform transSelectedBoard;
 
+	List<PalletInfo> listBoard = new List<PalletInfo>();
 	List<PalletInfo> listPallet = new List<PalletInfo>();
-	List<TileInfo> listTile 	= new List<TileInfo>();
 	EnemySpawnData enemySpawnData;
 
 	void Awake(){ 
@@ -71,11 +72,6 @@ public class SpawnTool : MonoBehaviour {
 		_go.transform.position = _pos;
 		_go.transform.localScale = Vector3.one * 100f;
 
-
-		//@@@@@@@@
-		//Life된 것호출...
-		_parent.GetComponent<PalletInfo>().SetAddMemoryGoFly(_go);
-
 		Enemy _enemy = _go.GetComponent<Enemy> ();
 		if (_enemy != null) {
 			_enemy.enabled = false;
@@ -91,7 +87,6 @@ public class SpawnTool : MonoBehaviour {
 	//선택일때 정보. (Delete, Modify, Select)
 	//---------------------------
 	public PalletInfo cursorPallet;
-	public TileInfo cursorTile, beforeTile;
 	public void InvokeSelectedPallete(PalletInfo _pallet){
 		cursorPallet = _pallet;
 		for (int i = 0, iMax = listPallet.Count; i < iMax; i++) {
@@ -101,22 +96,10 @@ public class SpawnTool : MonoBehaviour {
 	}
 
 	public void InvokeSelectedTile(TileInfo _tile){
-		if (cursorPallet == null) {
-			Debug.Log (" > 비행기, 삭제, 수정을 선택하세요");
-			return;
-		}
-		beforeTile = cursorTile;
-		cursorTile = _tile;			
-
-		switch(cursorPallet.mode){
-		case PalletMode.Select:
-			cursorTile.SetInput (cursorPallet);
-			break;
-		case PalletMode.Delete:
-			break;
-		case PalletMode.Modify:
-			break;
-		}
+		//for (int i = 0, iMax = listPallet.Count; i < iMax; i++) {
+		//	listPallet [i].SetUISprite (0.4f);
+		//}
+		_tile.SetUISprite (1f);
 	}
 
 	//----------------------------
@@ -139,16 +122,33 @@ public class SpawnTool : MonoBehaviour {
 				_go.transform.localPosition = _pos + new Vector3 (x * disx, y * disy, 0);
 
 				//Simple한 Info Class 추가...
-				TileInfo _tileInfo = _go.GetComponent<TileInfo>();
-				if (_tileInfo == null) {
-					_tileInfo = _go.AddComponent<TileInfo> ();
+				PalletInfo _palleteScp = _go.GetComponent<PalletInfo>();
+				if (_palleteScp == null) {
+					_palleteScp = _go.AddComponent<PalletInfo> ();
 				}
-				_tileInfo.SetInit(_name);
+				//_palleteScp.InitBoardTile (_label, _name);
 
 				//~~~~이걸로 조절.....
-				listTile.Add (_tileInfo);
+				listBoard.Add (_palleteScp);
 			}
 		}
 		DestroyImmediate (goSampleTile);	
 	}
+
+
+	/*
+	[SerializeField] List<Wave> waves = new List<Wave>();
+	public void InvokeParse(){
+		EnemySpawnData.ins.Parse(ref waves);
+	}
+
+	public void InvokeCurPosParsing(){
+		Transform _t;
+		int i, iMax;
+		for (i = 0, iMax = transform.childCount; i < iMax; i++) {
+			//_t = trans.GetChild (i);
+			//dicSpawnPoint.Add (int.Parse (_t.name), _t);
+		}
+	}
+	*/
 }
