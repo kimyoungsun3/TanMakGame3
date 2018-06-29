@@ -36,6 +36,10 @@ public class SpawnTool : MonoBehaviour {
 		uiiSpawnDelayTime.value 	= -1f+"";
 	}
 
+	public void InvokeSpawnDelayTime(){
+		uiiSpawnDelayTime.value = "" + float.Parse (uiiIntervalCount.value) * float.Parse (uiiIntervalDelayTime.value);
+	}
+
 	//----------------------------
 	//Create Pallete -> Empty and Enemy
 	//----------------------------

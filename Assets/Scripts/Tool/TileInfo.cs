@@ -49,10 +49,10 @@ public class TileInfo : MonoBehaviour {
 
 	//Select, under Enemy GameObject Create...
 	public void SetSelect(PalletInfo _palletInfo, SpawnTool _scpSpawnTool){
-		if (data.enemyNum == _palletInfo.enemyNum) {
-			//Debug.Log (1);
-			return;
-		}
+		//if (data.enemyNum == _palletInfo.enemyNum) {
+		//	//Debug.Log (1);
+		//	return;
+		//}
 
 		//default value...
 		data.enemyHealth = float.Parse(_scpSpawnTool.uiiHealth.value);
