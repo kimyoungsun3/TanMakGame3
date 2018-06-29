@@ -48,25 +48,17 @@ public class TileInfo : MonoBehaviour {
 	}
 
 	//Select, under Enemy GameObject Create...
-	string strBeforeDefaultValue = "";
-	public void SetSelect(PalletInfo _palletInfo, string _strDefaultValue){
-		if (data.enemyNum == _palletInfo.enemyNum && strBeforeDefaultValue == _strDefaultValue) {
+	public void SetSelect(PalletInfo _palletInfo, SpawnTool _scpSpawnTool){
+		if (data.enemyNum == _palletInfo.enemyNum) {
 			//Debug.Log (1);
 			return;
 		}
 
 		//default value...
-		//5:8:1:1
-		string[] _v = _strDefaultValue.Split(':');
-		if (_v.Length != 4) {
-			Debug.LogWarning ("Default Health:Speed:Damage:AI");
-			return;
-		}
-		data.enemyHealth = float.Parse(_v [0]);
-		data.enemySpeed = float.Parse(_v [1]);
-		data.enemyDamage = float.Parse(_v [2]);
-		data.enemyAiType = int.Parse(_v [3]);
-		strBeforeDefaultValue = _strDefaultValue;
+		data.enemyHealth = float.Parse(_scpSpawnTool.uiiHealth.value);
+		data.enemySpeed = float.Parse(_scpSpawnTool.uiiSpeed.value);
+		data.enemyDamage = float.Parse(_scpSpawnTool.uiiDamage.value);
+		data.enemyAiType = int.Parse(_scpSpawnTool.uiiAI.value);
 
 		data.bSelect 		= true;
 		data.enemyNum		= _palletInfo.enemyNum;

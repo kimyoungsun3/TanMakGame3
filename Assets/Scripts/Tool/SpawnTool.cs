@@ -10,8 +10,9 @@ public class SpawnTool : MonoBehaviour {
 	public GameObject goSampleTile;
 	public Transform transStartPointTile;
 	UIGrid gridPallete;
-	public UIInput uiiIntervalDelayTime, uiiIntervalCount, uiiSpawnDelayTime;
-	public UIInput uiiDisplayInfo, uiiDefaultHSDA;
+	public UIInput uiiIntervalCount, uiiIntervalDelayTime, uiiSpawnDelayTime;
+	public UIInput uiiDisplayInfo;
+	public UIInput uiiHealth, uiiSpeed, uiiDamage, uiiAI;
 
 	List<PalletInfo> listPallet = new List<PalletInfo>();
 	List<TileInfo> listTile 	= new List<TileInfo>();
@@ -30,8 +31,8 @@ public class SpawnTool : MonoBehaviour {
 	}
 
 	void InitFirst(){
-		uiiIntervalDelayTime.value 	= 1f+"";
 		uiiIntervalCount.value 		= 1+"";
+		uiiIntervalDelayTime.value 	= 1f+"";
 		uiiSpawnDelayTime.value 	= -1f+"";
 	}
 
@@ -130,12 +131,12 @@ public class SpawnTool : MonoBehaviour {
 
 		switch(cursorPallet.mode){
 		case PalletMode.Select:
-			cursorTile.SetSelect (cursorPallet, uiiDefaultHSDA.value);
-			CalculData ();
+			cursorTile.SetSelect (cursorPallet, this);
+			InvokeCalculData ();
 			break;
 		case PalletMode.Delete:
 			cursorTile.SetDelete (cursorPallet);
-			CalculData ();
+			InvokeCalculData ();
 			break;
 		case PalletMode.Modify:
 			break;
@@ -147,13 +148,13 @@ public class SpawnTool : MonoBehaviour {
 	// 정보 취합.....
 	//--------------------------------------
 	System.Text.StringBuilder msg = new System.Text.StringBuilder();
-	void CalculData(){
+	public void InvokeCalculData(){
 		//intervalCount : intervalDelayTime : spawnDelayTime
 		//"4:1.5:-1
 		msg.Length = 0;
-		msg.Append (uiiIntervalDelayTime.value);
-		msg.Append (':');
 		msg.Append (uiiIntervalCount.value);
+		msg.Append (':');
+		msg.Append (uiiIntervalDelayTime.value);
 		msg.Append (':');
 		msg.Append (uiiSpawnDelayTime.value);
 
@@ -179,7 +180,6 @@ public class SpawnTool : MonoBehaviour {
 			msg.Append (_data.enemyDamage);
 			msg.Append (':');
 			msg.Append (_data.enemyAiType);
-			msg.Append (':');
 			_count++;
 		}
 
@@ -189,7 +189,14 @@ public class SpawnTool : MonoBehaviour {
 		}
 
 		uiiDisplayInfo.value = msg.ToString ();
-		//Debug.Log (msg.ToString ());
+		Debug.Log (msg.ToString ());
+	}
+
+	public void InvokeAllClearTile(){
+		for (int i = 0, iMax = listTile.Count; i < iMax; i++) {
+			listTile [i].SetDelete (null);
+		}
+		InvokeCalculData ();
 	}
 
 	//----------------------------
