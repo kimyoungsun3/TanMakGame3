@@ -18,16 +18,22 @@ public class TileInfo : MonoBehaviour {
 		uiLabel 	= GetComponentInChildren<UILabel> ();
 	}
 
-	public void SetInit (string _name){
+	public void InitFirst (string _name){
 		uiLabel.text 		= _name;
 		data.spawnPointStr 	= _name;
 		uiETC.enabled 		= false;
-		SetBoardAlpha (0.4f);
+		SetBoardAlpha (Constant.ALPHA_NOSELECT);
 	}
 
 	public void SetBoardAlpha(float _alpha){
 		if (uiSprite != null) {
 			uiSprite.alpha = _alpha;
+		}
+	}
+
+	public void SetVisibleETC(bool _b){
+		if(uiETC != null){
+			uiETC.gameObject.SetActive (_b);
 		}
 	}
 
@@ -42,15 +48,29 @@ public class TileInfo : MonoBehaviour {
 	}
 
 	//Select, under Enemy GameObject Create...
-	public void SetSelect(PalletInfo _palletInfo){
-		if (data.enemyNum == _palletInfo.enemyNum) {
+	string strBeforeDefaultValue = "";
+	public void SetSelect(PalletInfo _palletInfo, string _strDefaultValue){
+		if (data.enemyNum == _palletInfo.enemyNum && strBeforeDefaultValue == _strDefaultValue) {
 			//Debug.Log (1);
 			return;
 		}
 
+		//default value...
+		//5:8:1:1
+		string[] _v = _strDefaultValue.Split(':');
+		if (_v.Length != 4) {
+			Debug.LogWarning ("Default Health:Speed:Damage:AI");
+			return;
+		}
+		data.enemyHealth = float.Parse(_v [0]);
+		data.enemySpeed = float.Parse(_v [1]);
+		data.enemyDamage = float.Parse(_v [2]);
+		data.enemyAiType = int.Parse(_v [3]);
+		strBeforeDefaultValue = _strDefaultValue;
+
 		data.bSelect 		= true;
 		data.enemyNum		= _palletInfo.enemyNum;
-		SetBoardAlpha (1f);
+		SetBoardAlpha (Constant.ALPHA_SELECT);
 
 		//비행기 오브젝트 소환....
 		if (enemyGO != null) {
@@ -68,7 +88,7 @@ public class TileInfo : MonoBehaviour {
 		data.bSelect 		= false;
 		data.enemyNum		= -1;
 		uiETC.enabled 		= false;
-		SetBoardAlpha (.5f);
+		SetBoardAlpha (Constant.ALPHA_NOSELECT);
 
 		//비행기 오브젝트 소환....
 		if (enemyGO != null) {

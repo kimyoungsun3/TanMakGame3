@@ -10,6 +10,8 @@ public class SpawnTool : MonoBehaviour {
 	public GameObject goSampleTile;
 	public Transform transStartPointTile;
 	UIGrid gridPallete;
+	public UIInput uiiIntervalDelayTime, uiiIntervalCount, uiiSpawnDelayTime;
+	public UIInput uiiDisplayInfo, uiiDefaultHSDA;
 
 	List<PalletInfo> listPallet = new List<PalletInfo>();
 	List<TileInfo> listTile 	= new List<TileInfo>();
@@ -23,6 +25,14 @@ public class SpawnTool : MonoBehaviour {
 		CreatePallete ();
 
 		CreateTile ();
+
+		InitFirst ();
+	}
+
+	void InitFirst(){
+		uiiIntervalDelayTime.value 	= 1f+"";
+		uiiIntervalCount.value 		= 1+"";
+		uiiSpawnDelayTime.value 	= -1f+"";
 	}
 
 	//----------------------------
@@ -36,12 +46,12 @@ public class SpawnTool : MonoBehaviour {
 
 		//Delete Pallete
 		InstancePalleteParent (PalletMode.Delete, -1, _parent, goSamplePallete, _pos);
-		//InstancePalleteParent (PalletMode.Modify, -1, _parent, goSamplePallete, _pos);
+		InstancePalleteParent (PalletMode.Modify, -1, _parent, goSamplePallete, _pos);
 
-		//EnemyList
+		//Pallete + Enemy GameObject
 		for(int i = 0, iMax = enemySpawnData.listEnemyKind.Count; i < iMax; i++){
 			_go = InstancePalleteParent (PalletMode.Select, enemySpawnData.listEnemyKind [i].enemyNum, _parent, goSamplePallete, _pos);
-			InstancePalleteFly (_go, enemySpawnData.listEnemyKind [i].enemyPrefab, _pos);
+			InstancePalleteEnemy (_go, enemySpawnData.listEnemyKind [i].enemyPrefab, _pos);
 		}
 
 		//Reposition
@@ -49,34 +59,36 @@ public class SpawnTool : MonoBehaviour {
 		DestroyImmediate (goSamplePallete);	
 	}
 
-	GameObject InstancePalleteParent(PalletMode _mode, int _enemyKind, GameObject _parent, GameObject _prefab, Vector3 _pos){
-		GameObject _go = NGUITools.AddChild (_parent, _prefab);
-		_go.transform.position = _pos;
+	//SamplePallete
+	GameObject InstancePalleteParent(PalletMode _mode, int _enemyNum, GameObject _parent, GameObject _prefabSamplePallet, Vector3 _pos){
+		GameObject _goPallet = NGUITools.AddChild (_parent, _prefabSamplePallet);
+		_goPallet.transform.position = _pos;
 
 		//Simple한 Info Class 추가...
-		PalletInfo _palleteInfo = _go.AddComponent<PalletInfo> ();
-		_palleteInfo.SetInit (_mode, _enemyKind);
+		PalletInfo _scpPalletInfo = _goPallet.AddComponent<PalletInfo> ();
+		_scpPalletInfo.InitFirst (_mode, _enemyNum);
 
 		//리스트에 추가.
-		listPallet.Add (_palleteInfo);
+		listPallet.Add (_scpPalletInfo);
 
-		return _go;
+		return _goPallet;
 	}
 
-	void InstancePalleteFly(GameObject _parent, GameObject _enemyPrefab, Vector3 _pos){
-		GameObject _enmeyGO = NGUITools.AddChild (_parent, _enemyPrefab);
-		_enmeyGO.transform.position = _pos;
-		_enmeyGO.transform.localScale = Vector3.one * 100f;
+	//Pallet 밑에 Enemy GameObject만들기...
+	void InstancePalleteEnemy(GameObject _parentPallet, GameObject _enemyPrefab, Vector3 _pos){
+		GameObject _goEnemy = NGUITools.AddChild (_parentPallet, _enemyPrefab);
+		_goEnemy.transform.position = _pos;
+		_goEnemy.transform.localScale = Vector3.one * 100f;
 
 		//Life된 것호출...
-		_parent.GetComponent<PalletInfo>().SetPalleteFly(_enmeyGO);
+		_parentPallet.GetComponent<PalletInfo>().SetPalletEnemy(_goEnemy);
 
-		Enemy _enemy = _enmeyGO.GetComponent<Enemy> ();
-		if (_enemy != null) {
-			_enemy.enabled = false;
+		Enemy _scpEnemy = _goEnemy.GetComponent<Enemy> ();
+		if (_scpEnemy != null) {
+			_scpEnemy.enabled = false;
 		}
 
-		Collider _col = _enmeyGO.GetComponent<Collider> ();
+		Collider _col = _goEnemy.GetComponent<Collider> ();
 		if (_col != null) {
 			_col.enabled = false;
 		}
@@ -87,12 +99,25 @@ public class SpawnTool : MonoBehaviour {
 	//---------------------------
 	public PalletInfo cursorPallet;
 	public TileInfo cursorTile, beforeTile;
+	bool bTileVisibleETC;
 	public void InvokeSelectedPallete(PalletInfo _pallet){
 		cursorPallet = _pallet;
 		for (int i = 0, iMax = listPallet.Count; i < iMax; i++) {
-			listPallet [i].SetBoardAlpha (0.4f);
+			listPallet [i].SetBoardAlpha (Constant.ALPHA_NOSELECT);
 		}
-		cursorPallet.SetBoardAlpha (1f);
+		cursorPallet.SetBoardAlpha (Constant.ALPHA_SELECT);
+
+		switch (cursorPallet.mode) {
+		case PalletMode.Select:
+		case PalletMode.Delete:
+			break;
+		case PalletMode.Modify:
+			for (int i = 0, iMax = listTile.Count; i < iMax; i++) {
+				listTile [i].SetVisibleETC (bTileVisibleETC);
+			}
+			bTileVisibleETC = !bTileVisibleETC;
+			break;
+		}
 	}
 
 	public void InvokeSelectedTile(TileInfo _tile){
@@ -105,14 +130,66 @@ public class SpawnTool : MonoBehaviour {
 
 		switch(cursorPallet.mode){
 		case PalletMode.Select:
-			cursorTile.SetSelect (cursorPallet);
+			cursorTile.SetSelect (cursorPallet, uiiDefaultHSDA.value);
+			CalculData ();
 			break;
 		case PalletMode.Delete:
 			cursorTile.SetDelete (cursorPallet);
+			CalculData ();
 			break;
 		case PalletMode.Modify:
 			break;
 		}
+
+	}
+
+	//--------------------------------------
+	// 정보 취합.....
+	//--------------------------------------
+	System.Text.StringBuilder msg = new System.Text.StringBuilder();
+	void CalculData(){
+		//intervalCount : intervalDelayTime : spawnDelayTime
+		//"4:1.5:-1
+		msg.Length = 0;
+		msg.Append (uiiIntervalDelayTime.value);
+		msg.Append (':');
+		msg.Append (uiiIntervalCount.value);
+		msg.Append (':');
+		msg.Append (uiiSpawnDelayTime.value);
+
+		//spawnPoint : enemyNum : health : speed : damage : AItype
+		//@00:1:4:8:1:1@10:2:4:8:1:1
+		SpawnRowData _data;
+		int _count = 0;
+		for (int i = 0, iMax = listTile.Count; i < iMax; i++) {
+			_data = listTile [i].data;
+			if (!_data.bSelect) {
+				continue;
+			}
+
+			msg.Append ('@');
+			msg.Append (_data.spawnPointStr);
+			msg.Append (':');
+			msg.Append (_data.enemyNum);
+			msg.Append (':');
+			msg.Append (_data.enemyHealth);
+			msg.Append (':');
+			msg.Append (_data.enemySpeed);
+			msg.Append (':');
+			msg.Append (_data.enemyDamage);
+			msg.Append (':');
+			msg.Append (_data.enemyAiType);
+			msg.Append (':');
+			_count++;
+		}
+
+		if (_count <= 0) {
+			msg.Length = 0;
+			msg.Append ("Pallet Click -> Tile Click");
+		}
+
+		uiiDisplayInfo.value = msg.ToString ();
+		//Debug.Log (msg.ToString ());
 	}
 
 	//----------------------------
@@ -120,7 +197,7 @@ public class SpawnTool : MonoBehaviour {
 	//----------------------------
 	void CreateTile(){
 		//버튼들 생성....
-		GameObject _go;
+		GameObject _goTile;
 		string _strSpawnPoint;
 		float disx = 140f;
 		float disy = 140f;
@@ -130,13 +207,13 @@ public class SpawnTool : MonoBehaviour {
 		for (int x = 0; x < xMax; x++) {
 			for (int y = 0; y < yMax; y++) {
 				//create point
-				_go = NGUITools.AddChild (gameObject, goSampleTile);
-				_go.name = _strSpawnPoint = "" + x + y;
-				_go.transform.localPosition = _pos + new Vector3 (x * disx, y * disy, 0);
+				_goTile = NGUITools.AddChild (gameObject, goSampleTile);
+				_goTile.name = _strSpawnPoint = "" + x + y;
+				_goTile.transform.localPosition = _pos + new Vector3 (x * disx, y * disy, 0);
 
 				//Simple한 Info Class 추가...
-				TileInfo _tileInfo = _go.GetComponent<TileInfo> ();
-				_tileInfo.SetInit(_strSpawnPoint);
+				TileInfo _tileInfo = _goTile.GetComponent<TileInfo> ();
+				_tileInfo.InitFirst(_strSpawnPoint);
 
 				//~~~~이걸로 조절.....
 				listTile.Add (_tileInfo);

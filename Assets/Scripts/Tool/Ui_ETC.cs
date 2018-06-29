@@ -6,6 +6,7 @@ public class Ui_ETC : MonoBehaviour {
 	public static Ui_ETC ins;
 	public UIInput uiHealth, uiSpeed, uiDamage, uiAi;
 	public GameObject child;
+	public UILabel uiTitle;
 
 	TileInfo tile;
 
@@ -24,6 +25,8 @@ public class Ui_ETC : MonoBehaviour {
 		uiSpeed.value 	= tile.data.enemySpeed.ToString();
 		uiDamage.value 	= tile.data.enemyDamage.ToString();
 		uiAi.value		= tile.data.enemyAiType.ToString();
+
+		uiTitle.text = tile.data.spawnPointStr +"("+ tile.enemyGO.name + ")";
 	}
 
 	//Class reference 와서 값만 넣어주면된다....

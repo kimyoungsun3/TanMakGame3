@@ -13,7 +13,7 @@ public class EnemySpawnData : MonoBehaviour {
 	//	Spawn Infomation
 	//-----------------------------
 	//intervalCount : intervalDelayTime : spawnDelayTime
-	//spawnPoint : enemyKind : health : speed : damage : AItype
+	//spawnPoint : enemyNum : health : speed : damage : AItype
 	[HideInInspector]string[] data = {
 		//- 일자형...
 		"4:1.5:-1@00:1:4:8:1:1@10:2:4:8:1:1@20:100:4:8:1:1@30:2:4:8:1:1@40:1:4:8:1:1",

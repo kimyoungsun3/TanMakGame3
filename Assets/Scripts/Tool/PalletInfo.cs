@@ -11,8 +11,8 @@ public class PalletInfo : MonoBehaviour {
 	UISprite uiSprite;
 	UILabel uiLabel;
 
-	public void SetInit (PalletMode _mode, int _enemyNum){
-		mode 		= _mode;
+	public void InitFirst (PalletMode _mode, int _enemyNum){
+		mode		= _mode;
 		enemyNum 	= _enemyNum;
 		uiSprite 	= GetComponent<UISprite> ();
 		uiLabel 	= GetComponentInChildren<UILabel> ();
@@ -23,10 +23,10 @@ public class PalletInfo : MonoBehaviour {
 		}
 		gameObject.name = _mode.ToString ();
 
-		SetBoardAlpha (0.4f);
+		SetBoardAlpha (Constant.ALPHA_NOSELECT);
 	}
 
-	public void SetPalleteFly(GameObject _go){
+	public void SetPalletEnemy(GameObject _go){
 		enemyGO 		= _go;
 		gameObject.name = _go.name;
 		uiLabel.text 	= _go.name;

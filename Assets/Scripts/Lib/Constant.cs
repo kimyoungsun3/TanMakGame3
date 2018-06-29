@@ -31,6 +31,9 @@ public class Constant {
 	public const float BULLET_SHELL_POWER 		= 150f;
 	public const float BULLET_SHELL_ALIVE_TIME 	= 3f;
 	public const float ENEMY_SEARCH_RATE 		= .25f;
+
+	public static readonly float ALPHA_SELECT 	= 1f;
+	public static readonly float ALPHA_NOSELECT = .3f;  
 	//public const int INT_MAX = int.MaxValue;
 
 
