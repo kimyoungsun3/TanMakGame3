@@ -184,10 +184,15 @@ public class PoolManager : MonoBehaviour {
 			_list.Insert (_dataList.front, _goTemp);
 			_goTemp.name += _dataList.max.ToString ();
 			_rtn = _goTemp;
+            if (!_goTemp.activeInHierarchy)
+            {
+                _goTemp.SetActive(true);
+                //Debug.Log(_goTemp.name + ":" + _goTemp.activeInHierarchy);
+            }
 
-			//Debug.Log ("add front:" + _dataList.front);
+            //Debug.Log ("add front:" + _dataList.front);
 
-			_dataList.front++;
+            _dataList.front++;
 			_dataList.max++;
 			if (_dataList.front >= _dataList.max) {
 				_dataList.front = 0;
