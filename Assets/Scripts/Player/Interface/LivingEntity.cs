@@ -20,11 +20,11 @@ public class LivingEntity : PoolMaster, IDamageable {
 	}
 
 	public virtual void TakeDamage(float _damage){
-		//health -= _damage;
-		//
-		//if (health <= 0f && !bDead) {
-		//	Die ();
-		//}
+		health -= _damage;
+
+		if (health <= 0f && !bDead) {
+			Die ();
+		}
 	}
 
 	protected virtual void Die(){

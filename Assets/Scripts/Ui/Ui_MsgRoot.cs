@@ -20,13 +20,14 @@ public class Ui_MsgRoot : MonoBehaviour {
 	}
 
 	public void InvokeShowMessage(string _prefabName, string _msg, Vector3 _pos, float _duration){
-		//3D World -> 3D viewport -> NGUI viewport
+		//3D World -> 3D viewport = NGUI viewport
 		//         -> NGUI 3D world
 		//            .position 그대로 넣기...
 		Vector3 _vpos = gameCamera.WorldToViewportPoint(_pos);
 		Vector3 _wpos = uiCamera.ViewportToWorldPoint(_vpos);
 		_wpos.z = transform.position.z;
 
+		//Debug.Log (1);
 		//UI Message
 		PoolReturnUI _p2 = PoolManager.ins.Instantiate(_prefabName, _wpos, Quaternion.identity).GetComponent<PoolReturnUI>();
 		_p2.ShowMsg (_msg);

@@ -53,7 +53,7 @@ public class Enemy : LivingEntity {
 	//---------------------------------------
 	//Player -> PlayerBullet -> Enemy
 	//---------------------------------------
-	//public virtual void TakeHit(float _damage, Vector3 _hitPoint, Vector3 _hitDir){
+	//public override void TakeHit(float _damage, Vector3 _hitPoint, Vector3 _hitDir){
 	//	health 		-= _damage;
 	//	hitPoint 	= _hitPoint;
 	//	hitDir 		= _hitDir;
@@ -65,7 +65,7 @@ public class Enemy : LivingEntity {
 
 	//총알 		-> Enemy (Ray)
 	//Player 	-> Enemy (no Damage)?
-	//public virtual void TakeDamage(float _damage){
+	//public override void TakeDamage(float _damage){
 	//	//health -= _damage;
 	//	//
 	//	//if (health <= 0f && !bDead) {
@@ -73,7 +73,8 @@ public class Enemy : LivingEntity {
 	//	//}
 	//}
 
-	protected void Die(){
+	protected override void Die(){
+		//Debug.Log (this + " Die:" + 1);
 		bDead = true;
 
 		//Expire Effect
@@ -83,6 +84,7 @@ public class Enemy : LivingEntity {
 		//Sound
 		SoundManager.ins.Play ("Enemy attack", false);
 
+		//Debug.Log (this + ":" + 1);
 		//Message Show
 		Ui_MsgRoot.ins.InvokeShowMessage("UiHitMessage", "[00ff00]Hit[-]", hitPoint, 5f);
 

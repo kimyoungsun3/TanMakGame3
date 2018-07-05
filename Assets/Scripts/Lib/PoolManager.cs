@@ -44,7 +44,7 @@ public class PoolManager : MonoBehaviour {
 	//1. 첫번째 Prefab 파일. 
 	//2. 두번째 GameObject는 Memory GameObject
 	Dictionary<GameObject, GameObjectData> poolList = new Dictionary<GameObject, GameObjectData>();
-	Dictionary<string, GameObject> poolListName 	= new Dictionary<string, GameObject>();
+	Dictionary<int, GameObject> poolListName 		= new Dictionary<int, GameObject>();
 
 	void Awake(){
 		if (ins == null) {
@@ -90,7 +90,7 @@ public class PoolManager : MonoBehaviour {
 			_list 		= new List<GameObject> ();
 			_dataList 	= new GameObjectData (_list, _count);
 			poolList.Add(_prefab, _dataList);
-			poolListName.Add (_prefab.name, _prefab);
+			poolListName.Add (_prefab.name.GetHashCode(), _prefab);
 			for (i = 0; i < _count; i++) {
 				//Debug.Log ("create > c");
 				_go = Instantiate (_prefab) as GameObject;
@@ -109,12 +109,12 @@ public class PoolManager : MonoBehaviour {
 	}
 
 	public GameObject Instantiate(string _name, Vector3 _pos, Quaternion _qua){
-		if (!poolListName.ContainsKey (_name)) {
+		if (!poolListName.ContainsKey (_name.GetHashCode())) {
 			Debug.LogError ("풀링에 없음 _name[" + _name + "]");
 			return null;
 		}
 
-		GameObject _rtnObject = InstantiateInner (poolListName[_name], _pos, _qua);
+		GameObject _rtnObject = InstantiateInner (poolListName[_name.GetHashCode()], _pos, _qua);
 		//_rtnObject.transform.position = _pos;
 		//_rtnObject.transform.rotation = _qua;
 
