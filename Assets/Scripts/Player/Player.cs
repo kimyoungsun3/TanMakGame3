@@ -198,6 +198,9 @@ public class Player : MonoBehaviour, IDamageable {
 			//Enemy  > 에너지 감소.
 			_col.GetComponent<Enemy>().TakeDamage(1);
 
+			//Shake
+			CameraShake2D.ins.Shaking();
+
 		}else if(_col.CompareTag ("Item")) {
 			Debug.Log (this + " #### Item > Player OnTriggerEnter");
 		}
