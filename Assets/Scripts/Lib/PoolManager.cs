@@ -44,7 +44,11 @@ public class PoolManager : MonoBehaviour {
 	//1. 첫번째 Prefab 파일. 
 	//2. 두번째 GameObject는 Memory GameObject
 	Dictionary<GameObject, GameObjectData> poolList = new Dictionary<GameObject, GameObjectData>();
+<<<<<<< HEAD
 	Dictionary<int, GameObject> poolListName 		= new Dictionary<int, GameObject>();
+=======
+	Dictionary<int, GameObject> poolListName 	= new Dictionary<int, GameObject>();
+>>>>>>> 80aba5a0860acbdfa294e6772f08cc960ca6dbcd
 
 	void Awake(){
 		if (ins == null) {
