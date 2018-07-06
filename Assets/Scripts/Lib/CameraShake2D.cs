@@ -9,9 +9,8 @@ public class CameraShake2D : MonoBehaviour {
 	Camera cam;
 	Transform trans;
 
-	//public AnimationCurve curve;
-	float shakeStartTime, shakeEndTime;
-	public float shakeDurationTime = .5f;
+	public AnimationCurve curve;
+	float shakeStartTime, shakeEndTime, shakeDurationTime;
 	public float shakeOffX = 1f;
 	Vector3 oldPos, offSet;
 	bool bShakeStart, bShakeEnd;
@@ -26,10 +25,11 @@ public class CameraShake2D : MonoBehaviour {
 	}
 
 	//Coroutine co;
-	public void Shaking(){
+	public void Shaking(float _duration = .5f){
+		shakeDurationTime = _duration;
 		shakeStartTime 	= Time.time;
 		shakeEndTime 	= Time.time + shakeDurationTime;
-		//oldPos 		= trans.position;
+		//oldPos 			= trans.position;
 		//Debug.Log (" > Shaking Coroutine");
 
 		StopAllCoroutines ();
@@ -39,8 +39,11 @@ public class CameraShake2D : MonoBehaviour {
 	IEnumerator CoShake(){
 		while(Time.time < shakeEndTime) 
 		{
+			//float _interval = (Time.time - shakeStartTime) / shakeDurationTime;
+			//offSet = Random.insideUnitCircle * shakeOffX;
 			float _interval = (Time.time - shakeStartTime) / shakeDurationTime;
-			offSet = Random.insideUnitCircle * shakeOffX;
+			float _x = curve.Evaluate (_interval) * shakeOffX;
+			offSet.Set (Random.Range (-_x, _x), Random.Range (-_x, _x), 0);
 			trans.position = oldPos + offSet;
 
 			yield return null;
@@ -48,13 +51,14 @@ public class CameraShake2D : MonoBehaviour {
 		trans.position = oldPos;
 	}
 
-	#if UNITY_EDITOR
+	//#if UNITY_EDITOR
 	//Update is called once per frame
-	void LateUpdate () {
-		//Debug.Log (this + ":" + 1);
-		if (Input.GetKeyDown(KeyCode.Alpha1)) {
-			Shaking ();
-		}					
-	}
-	#endif
+	//public float debugShakeDurationTime = .5f;
+	//void LateUpdate () {
+	//	//Debug.Log (this + ":" + 1);
+	//	if (Input.GetKeyDown(KeyCode.Alpha1)) {
+	//		Shaking (debugShakeDurationTime);
+	//	}					
+	//}
+	//#endif
 }

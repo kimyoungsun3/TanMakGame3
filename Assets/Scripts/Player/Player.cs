@@ -28,7 +28,8 @@ public class Player : MonoBehaviour, IDamageable {
 
 	[Header("유저정보")]
 	[HideInInspector] public float health;
-	[HideInInspector]public bool bDeath;//player가 감지...
+	[HideInInspector] public int coin;
+	[HideInInspector] public bool bDeath;//player가 감지...
 	public float power = 1f;
 	bool bMujuk;
 
@@ -38,7 +39,9 @@ public class Player : MonoBehaviour, IDamageable {
 	public float HEALT_MAX = 3f;
 
 
-	//---------------------------
+	//------------------------------------------------------------
+	// 초기생성...
+	//------------------------------------------------------------
 	void Start () {
 		trans 	= transform;
 		cam 	= Camera.main;
@@ -53,12 +56,16 @@ public class Player : MonoBehaviour, IDamageable {
 		}
 	}
 
-	public void Init(){
+	//------------------------------------------------------------
+	// 재리스폰....
+	//------------------------------------------------------------
+	public void InitReuse(){
 		enabled 				= true;
 		playerSprite.enabled 	= true;
 		playerCollider.enabled 	= true;
 
-		health 	= HEALT_MAX;
+		health 	= Constant.HEALT_MAX;
+		coin	= 0;
 		bDeath 	= false;
 		bMujuk 	= false;
 		timeMujuk = 0;
@@ -185,29 +192,26 @@ public class Player : MonoBehaviour, IDamageable {
 		_scp.SetInit (power);
 	}
 
+	//------------------------------------------------------------
+	// 충돌관련
+	//------------------------------------------------------------
 	void OnTriggerEnter(Collider _col){
 		//Debug.Log (this + " OnTriggerEnter " + _col.name);
-		if (_col.CompareTag ("EnemyBullet")) {
-			Debug.Log (this + " #### EnemyBullet > Player OnTriggerEnter");
-		}else if(_col.CompareTag ("Enemy")) {
+
+		//#### EnemyBullet (OnTriggerEnter) -> Player
+		//#### Item (OnTriggerEnter)		-> Player
+		if(_col.CompareTag ("Enemy")) {
 			//Debug.Log (this + " Enemy -> Player OnTriggerEnter");
-			//Player - Enemy 충돌...
-			//Player > 깜박,  에너지감소
+			//Player - Enemy 충돌... > 깜박,  에너지감소
 			TakeDamage(1);
 
-			//Enemy  > 에너지 감소.
-			_col.GetComponent<Enemy>().TakeDamage(1);
-
-			//Shake
-			CameraShake2D.ins.Shaking();
-
-		}else if(_col.CompareTag ("Item")) {
-			Debug.Log (this + " #### Item > Player OnTriggerEnter");
+			//Player - Enemy 무효과..
+			//_col.GetComponent<Enemy>().TakeDamage(1);
 		}
 	}
 
 	public void TakeHit(float _damage, Vector3 _hitPoint, Vector3 _hitDirection){
-
+		TakeDamage (_damage);
 	}
 
 	//Boss 			-> Player
@@ -216,14 +220,15 @@ public class Player : MonoBehaviour, IDamageable {
 	public void TakeDamage(float _damage){
 		//데미지, 깜박이기, Collider off(잠시무적)
 		health -= _damage;
+		CameraShake2D.ins.Shaking(.5f);
 
 		bMujuk 		= true;
 		timeMujuk 	= Time.time + MUJUK_TIME;
-		playerSprite.enabled = false;
-		playerCollider.enabled = false;
+		playerSprite.enabled 	= false;
+		playerCollider.enabled 	= false;
 		//Debug.Log (health + ":" + bDeath);
 
-		if (health <= 0 && !bDeath) {
+		if (health <= 0f && !bDeath) {
 			Dead ();
 		}
 	}
@@ -242,6 +247,36 @@ public class Player : MonoBehaviour, IDamageable {
 		bDeath = true;
 	}
 
+	public void TakeSetItem(ITEM_KIND _kind, int _count, float _power){
+		//Debug.Log ("#### GetItem > 구현해야함...");
+		switch (_kind) {
+		case ITEM_KIND.PLUS_BULLET:
+			weaponStep += _count;
+			if (weaponStep > Constant.WEAPON_STEP_MAX) {
+				weaponStep = Constant.WEAPON_STEP_MAX;
+			}
+			break;
+		case ITEM_KIND.PLUS_HEALTH:
+			Debug.Log (" > health up");
+			health += _count;
+			if (health > HEALT_MAX) {
+				health = HEALT_MAX;
+			}
+			break;
+		case ITEM_KIND.PLUS_COIN:
+			Debug.Log (" > Coin up");
+			coin += _count; 
+			break;
+		case ITEM_KIND.PLUS_POWER:
+			Debug.Log (" > Power up");
+			power += _power;
+			break;
+		}
+	}
+
+	//------------------------------------------------------------
+	// 기타관련...
+	//------------------------------------------------------------
 	public void DisableControl(){
 		playerSprite.enabled 	= false;
 		playerCollider.enabled 	= false;

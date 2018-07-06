@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour {
-	[SerializeField] int waveIndex;
 	public static EnemySpawner ins;
+	[SerializeField] int waveIndex;
 	[SerializeField] List<Wave> waves = new List<Wave>();
 
 	Transform player;

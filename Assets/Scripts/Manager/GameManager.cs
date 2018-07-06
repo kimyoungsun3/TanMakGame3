@@ -54,6 +54,7 @@ public class GameManager : FSM<GAME_STATE> {
 		#if UNITY_EDITOR
 		Application.runInBackground 	= true;//editor mode back ground is run..
 		//Cursor.visible 					= false;
+		//cursor is invisible and 플레이중 커서를 못찾음....
 		#endif
 
 		//아직미검증....
@@ -119,7 +120,7 @@ public class GameManager : FSM<GAME_STATE> {
 		if (player == null) {
 			player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player>();
 		}
-		player.Init ();
+		player.InitReuse ();
 
 		//Spawner Setting...
 		EnemySpawner.ins.EnableControl (0, player.transform);

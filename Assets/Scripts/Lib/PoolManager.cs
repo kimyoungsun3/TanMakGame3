@@ -15,6 +15,10 @@ using System.Collections.Generic;
 
 
 public class PoolManager : MonoBehaviour {
+	[Header("메모리 프리펩")]
+	[Tooltip("메모리에 생성후에 메모리에 있는 프리펩을 비활성화 한다.")]
+	public Transform transMemoryPrefabRoot;
+
 	[System.Serializable]
 	public class GameObjectInfo{
 		public GameObject prefab;
@@ -38,6 +42,7 @@ public class PoolManager : MonoBehaviour {
 	}
 
 	public static PoolManager ins;
+	[Header("풀링정보")]
 	public List<GameObjectInfo> objList = new List<GameObjectInfo>();
 	public bool willGrow = true;
 
@@ -52,6 +57,19 @@ public class PoolManager : MonoBehaviour {
 		}
 
 		init ();
+		ReleaseMemoryPrefab ();
+	}
+
+	//-----------------------------------------
+	private void ReleaseMemoryPrefab(){
+		Transform _t = transMemoryPrefabRoot;
+		GameObject _g;
+		for (int i = 0, iMax = _t.childCount; i < iMax; i++) {
+			_g = _t.GetChild (i).gameObject;
+			if (_g.activeSelf) {
+				_g.SetActive (false);
+			}
+		}		
 	}
 
 	private void init(){
@@ -108,6 +126,7 @@ public class PoolManager : MonoBehaviour {
 		}
 	}
 
+	//-----------------------------------------
 	public GameObject Instantiate(string _name, Vector3 _pos, Quaternion _qua){
 		if (!poolListName.ContainsKey (_name.GetHashCode())) {
 			Debug.LogError ("풀링에 없음 _name[" + _name + "]");

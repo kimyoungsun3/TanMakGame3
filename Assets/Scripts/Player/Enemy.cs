@@ -40,8 +40,7 @@ public class Enemy : LivingEntity {
 		//Debug.Log (this + "OnTriggerEnter "+_col.tag);
 		//if (_col.CompareTag ("Player")) {
 		//	//Player -> Enemy ( 충돌 )
-		//	Debug.Log("Player -> Enemy ( 충돌, HP-- )");
-		//	TakeDamage(1);
+		//	Debug.Log("Player -> Enemy -> 충돌 무효과 )");
 		//} else 
 		if (_col.CompareTag ("Wall")) {
 			//Pool에 린턴...
@@ -93,6 +92,19 @@ public class Enemy : LivingEntity {
 			callbackDeath (this);
 			callbackDeath = null;
 		}
+
+		//강제로 아이템 생성...
+		Debug.Log("#### 아이템 강제로 임의 생성...");
+		Item _scpItem = PoolManager.ins.Instantiate("Item", hitPoint, Quaternion.identity).GetComponent<Item>();
+		int _k = Random.Range (0, ((int)ITEM_KIND.PLUS_POWER) + 1);
+		if(_k <= 0)
+			_scpItem.InitReuse (ITEM_KIND.PLUS_BULLET, 1, 0);
+		else if(_k <= 1)
+			_scpItem.InitReuse (ITEM_KIND.PLUS_HEALTH, 1, 0);
+		else if(_k <= 2)
+			_scpItem.InitReuse (ITEM_KIND.PLUS_COIN, 1, 0);
+		else
+			_scpItem.InitReuse (ITEM_KIND.PLUS_POWER, 0, 0.1f);
 
 		Destroy ();
 	}

@@ -18,8 +18,4 @@ public abstract class PoolMaster : MonoBehaviour {
 	public virtual void Destroy(){
 		gameObject.SetActive (false);
 	}
-
-	//총알들...
-	//public virtual void Seek(Transform _target, float _damage, float _radius = 0f){
-	//}
 }

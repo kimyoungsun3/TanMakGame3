@@ -9,6 +9,7 @@ public enum GAME_STATE {
 	Result		
 };
 public enum BULLET_KIND {	BULLET, BULLET2, BULLET3, BULLET4	};
+public enum ITEM_KIND { PLUS_BULLET, PLUS_HEALTH, PLUS_COIN, PLUS_POWER};
 public delegate void DelegateVoidFunVoid();
 
 public delegate void VOID_FUNC_VOID();
@@ -36,7 +37,9 @@ public class Constant {
 	public static readonly float ALPHA_NOSELECT = .3f;  
 	//public const int INT_MAX = int.MaxValue;
 
-
+	//Player
+	public static readonly int WEAPON_STEP_MAX	= 6;//총알구멍수...
+	public static readonly int HEALT_MAX 		= 3;
 	//Turret...
 	//public const int WEAPON_ATTACT_ANGLE = 20;
 

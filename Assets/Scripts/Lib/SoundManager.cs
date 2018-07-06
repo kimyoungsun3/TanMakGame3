@@ -15,7 +15,7 @@ public class SoundManager : MonoBehaviour {
 		[HideInInspector] public int hashID;
 
 		public void Init(){
-			hashID = Animator.StringToHash (name);
+			hashID = name.GetHashCode();
 		}
 
 		public void Play(bool _bLoop, float _pitch, int _clipIdx = -1){
@@ -80,8 +80,7 @@ public class SoundManager : MonoBehaviour {
 	//Play("xxx", -1) -> xxx 1번 one shoot
 	public void Play(string  _name, bool _bLoop, int _clipIdx = -1){
 		//Debug.Log ("name:" + _name + " loop:" + _bLoop);
-		int _hashID = Animator.StringToHash (_name);
-		Play (_hashID, _bLoop, _clipIdx);
+		Play (_name.GetHashCode(), _bLoop, _clipIdx);
 	}
 
 	public void Play(int _hashID){
@@ -107,7 +106,7 @@ public class SoundManager : MonoBehaviour {
 
 	public void Stop(string  _name){
 		//Debug.Log ("SoundManager Stop _name:" + _name);
-		int _hashID = Animator.StringToHash (_name);
+		int _hashID = _name.GetHashCode();
 		SoundData _data = FindSound (_hashID, _name);
 		if (_data != null) {
 			_data.Stop ();
