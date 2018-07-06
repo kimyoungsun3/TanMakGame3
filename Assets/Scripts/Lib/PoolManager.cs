@@ -62,14 +62,16 @@ public class PoolManager : MonoBehaviour {
 
 	//-----------------------------------------
 	private void ReleaseMemoryPrefab(){
-		Transform _t = transMemoryPrefabRoot;
-		GameObject _g;
-		for (int i = 0, iMax = _t.childCount; i < iMax; i++) {
-			_g = _t.GetChild (i).gameObject;
-			if (_g.activeSelf) {
-				_g.SetActive (false);
-			}
-		}		
+		if (transMemoryPrefabRoot != null) {
+			Transform _t = transMemoryPrefabRoot;
+			GameObject _g;
+			for (int i = 0, iMax = _t.childCount; i < iMax; i++) {
+				_g = _t.GetChild (i).gameObject;
+				if (_g.activeSelf) {
+					_g.SetActive (false);
+				}
+			}	
+		}
 	}
 
 	private void init(){
