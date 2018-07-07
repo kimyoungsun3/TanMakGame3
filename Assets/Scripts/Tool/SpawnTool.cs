@@ -193,7 +193,7 @@ public class SpawnTool : MonoBehaviour {
 		}
 
 		uiiDisplayInfo.value = msg.ToString ();
-		Debug.Log (msg.ToString ());
+		//Debug.Log (msg.ToString ());
 	}
 
 	public void InvokeAllClearTile(){
