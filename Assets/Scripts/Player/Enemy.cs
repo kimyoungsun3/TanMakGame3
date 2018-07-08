@@ -94,18 +94,19 @@ public class Enemy : LivingEntity {
 		}
 
 		//강제로 아이템 생성...
-		Debug.Log("#### 아이템 강제로 임의 생성...");
-		Item _scpItem = PoolManager.ins.Instantiate("Item", hitPoint, Quaternion.identity).GetComponent<Item>();
-		int _k = Random.Range (0, ((int)ITEM_KIND.PLUS_POWER) + 1);
-		if(_k <= 0)
-			_scpItem.InitReuse (ITEM_KIND.PLUS_BULLET, 1, 0);
-		else if(_k <= 1)
-			_scpItem.InitReuse (ITEM_KIND.PLUS_HEALTH, 1, 0);
-		else if(_k <= 2)
-			_scpItem.InitReuse (ITEM_KIND.PLUS_COIN, 1, 0);
-		else
-			_scpItem.InitReuse (ITEM_KIND.PLUS_POWER, 0, 0.1f);
-
+		if (Random.Range (0, 100) < 20) {
+			Debug.Log("#### 아이템 강제로 임의 생성...");
+			Item _scpItem = PoolManager.ins.Instantiate ("Item", hitPoint, Quaternion.identity).GetComponent<Item> ();
+			int _k = Random.Range (0, ((int)ITEM_KIND.PLUS_POWER) + 1);
+			if (_k <= 0)
+				_scpItem.InitReuse (ITEM_KIND.PLUS_BULLET, 1, 0);
+			else if (_k <= 1)
+				_scpItem.InitReuse (ITEM_KIND.PLUS_HEALTH, 1, 0);
+			else if (_k <= 2)
+				_scpItem.InitReuse (ITEM_KIND.PLUS_COIN, 1, 0);
+			else
+				_scpItem.InitReuse (ITEM_KIND.PLUS_POWER, 0, 0.1f);
+		}
 		Destroy ();
 	}
 
